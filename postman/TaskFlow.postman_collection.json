@@ -1,0 +1,101 @@
+{
+    "info": {
+        "name": "TaskFlow API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Register",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{baseUrl}}/auth/register",
+                        "header": {
+                            "Content-Type": "application/json"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": {
+                                "name": "Admin User",
+                                "email": "admin@example.com",
+                                "password": "password123"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.data && jsonData.data.token) {",
+                                    "    pm.environment.set('authToken', jsonData.data.token);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "url": "{{baseUrl}}/auth/login",
+                        "header": {
+                            "Content-Type": "application/json"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": {
+                                "email": "admin@example.com",
+                                "password": "password123"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Tasks",
+            "item": [
+                {
+                    "name": "Create Task (Admin)",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{baseUrl}}/tasks",
+                        "header": {
+                            "Authorization": "Bearer {{authToken}}",
+                            "Content-Type": "application/json"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": {
+                                "title": "New Task",
+                                "description": "Task description",
+                                "reward": 15.00,
+                                "timeEstimate": "30 minutes",
+                                "category": "Testing",
+                                "difficulty": "Easy",
+                                "timeInSeconds": 1800,
+                                "steps": ["Step 1", "Step 2"],
+                                "approvalType": "automatic"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Get Tasks",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/tasks",
+                        "header": {
+                            "Authorization": "Bearer {{authToken}}"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
